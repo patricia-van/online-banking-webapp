@@ -39,6 +39,10 @@ const Login = (props) => {
         navigate('/dashboard')
     }
 
+    const onTransactionClick = () => {
+        navigate('/transactions')
+    }
+
     return (
         <div className={'mainContainer'}>
             
@@ -71,6 +75,7 @@ const Login = (props) => {
 
             <div className={'inputContainer'}>
                 <input className={'inputButton'} type='button' onClick={onButtonClick} value={'Login'} />
+                <input className={'transactionsButton'} type='button' onClick={onTransactionClick} value={'Manage my Transactions'} />
             </div>
 
         </div>  

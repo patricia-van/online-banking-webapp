@@ -5,6 +5,7 @@ import './App.css'
 
 import Login from './Pages/login'
 import Dashboard from './Pages/dashboard'
+import ManageTransactions from './Pages/transaction'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -22,6 +23,12 @@ function App() {
             path='/dashboard' 
             element={<Dashboard />}
           />
+          <Route 
+            path='/transactions' 
+            element={<ManageTransactions />}
+          />
+
+          
         </Routes>
       </BrowserRouter>
     </div>
