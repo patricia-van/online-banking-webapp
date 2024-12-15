@@ -1,7 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './Pages/login'
-import './App.css'
 import { useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+
+import './App.css'
+
+import Login from './Pages/login'
+import Dashboard from './Pages/dashboard'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -14,6 +17,10 @@ function App() {
           <Route
             path='/'
             element={<Login setLogginedIn={setLoggedIn} setEmail={setEmail} />}
+          />
+          <Route 
+            path='/dashboard' 
+            element={<Dashboard />}
           />
         </Routes>
       </BrowserRouter>
