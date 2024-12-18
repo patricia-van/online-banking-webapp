@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../AuthProvider'
 
 const Login = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
+    const [input, setInput] = useState({
+        username: '',
+        password: ''
+    })
+    const auth = useAuth()
 
     const navigate = useNavigate()
 
@@ -37,6 +43,23 @@ const Login = (props) => {
 
         // Simulate successful login and naviagte to dashboard
         navigate('/dashboard')
+    }
+
+    const handleSubmitEvent = (e) => {
+        e.preventdefault()
+        if (input.username !== '' & input.password !== '') {
+            auth.login(input)
+            return
+        }
+        alert('Please provide a vallid input')
+    }
+
+    const handleInput = (e) => {
+        const { name, value } = e.target
+        setInput((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
     }
 
     const onTransactionClick = () => {
@@ -104,7 +127,21 @@ const Login = (props) => {
             <br />
 
             <div className={'inputContainer'}>
-                <input
+                <form onSubmit={handleSubmitEvent}>
+                    <div className='formControl'>
+                        <label htmlFor='uername'>Username:</label>
+                        <input type='username' id='username' name='username' onChange={handleInput} />
+                    </div>
+
+                    <div className='formControl'>
+                        <label htmlFor='password'>Password:</label>
+                        <input type='password' id='password' name='password' onChange={handleInput} />
+                    </div>
+
+                    <button className='submitButtton'>Submit</button>
+                </form>
+
+                {/* <input
                     value={email}
                     placeholder='Enter your email here'
                     onChange={(ev) => setEmail(ev.target.value)}
@@ -121,7 +158,7 @@ const Login = (props) => {
                     onChange={(ev) => setPassword(ev.target.value)}
                     className={'inputBox'}
                 />
-                <label className='errorLabel'>{passwordError}</label>
+                <label className='errorLabel'>{passwordError}</label> */}
             </div>
             <br />
 
