@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import AuthProvider from '../AuthProvider';
+import { useAuth } from '../AuthProvider';
 // import dashboard.css
 
 const Dashboard = () => {
     const [accounts, setAccounts] = useState([]);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const auth = useAuth()
 
     useEffect(() => {
         // fetch data for user accounts
@@ -86,6 +89,11 @@ const Dashboard = () => {
                     <p>No transactions scheduled.</p>
                 )}
             </section>
+
+            <button onClick={() => auth.logout()} className='logout-button'>
+                Logout
+            </button>
+            
             </AuthProvider>
         </div>
     )
