@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AuthProvider from '../AuthProvider';
 // import dashboard.css
 
 const Dashboard = () => {
@@ -37,6 +38,7 @@ const Dashboard = () => {
 
     return (
         <div className='user-dashboard'>
+            <AuthProvider>    
             <h1>Welcome to Your Dashboard</h1>
 
             <section className='accounts-section'>
@@ -84,6 +86,7 @@ const Dashboard = () => {
                     <p>No transactions scheduled.</p>
                 )}
             </section>
+            </AuthProvider>
         </div>
     )
 }

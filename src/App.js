@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import './App.css'
 
+import AuthProvider from './AuthProvider'
+import PrivateRoute from './PrivateRoute'
 import Login from './Pages/login'
 import Dashboard from './Pages/dashboard'
 import ManageTransactions from './Pages/transaction'
@@ -14,22 +16,23 @@ function App() {
   return (
     <div className='App'>
       <BrowserRouter>
-        <Routes>
-          <Route
-            path='/'
-            element={<Login setLogginedIn={setLoggedIn} setEmail={setEmail} />}
-          />
-          <Route 
-            path='/dashboard' 
-            element={<Dashboard />}
-          />
-          <Route 
-            path='/transactions' 
-            element={<ManageTransactions />}
-          />
+        <AuthProvider>
+          <Routes>
+            <Route
+              path='/'
+              element={<Login setLogginedIn={setLoggedIn} setEmail={setEmail} />}
+            />
 
-          
-        </Routes>
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+
+            <Route 
+              path='/transactions' 
+              element={<ManageTransactions />}
+            />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </div>
   )
