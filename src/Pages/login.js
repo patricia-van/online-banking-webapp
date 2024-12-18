@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const Login = (props) => {
@@ -43,11 +43,63 @@ const Login = (props) => {
         navigate('/transactions')
     }
 
+    const [data, setdata] = useState({
+        name: "", 
+        age: 0,
+        data: "",
+        programming: ""
+      })
+    
+    useEffect(() => {
+        fetch("/data").then((res) => 
+          res.json().then((data) => {
+            setdata({
+              name: data.Name,
+              age: data.Age,
+              data: data.Date,
+              programming: data.programming
+            })
+          }))
+      }, [])
+
+    const [accounts, setAccounts] = useState([]);
+    
+    useEffect(() => {
+        fetch("/api/accounts").then((res) => {
+            res.json().then((data) => {
+                if (Array.isArray(data)) {
+                    setAccounts(data)
+                } else {
+                    console.error('Received data not an array')
+                }
+                    
+            })
+        //     if (!res.ok) {
+        //         throw new Error('Network response was not ok')
+        //     }
+        //     return res.json();
+        // }).then((data) => {
+        //     setAccounts(data)
+        // }).catch((error) => {
+        //     console.error('There was a problem with the fecth operation')
+        })
+    }, [])
+
     return (
         <div className={'mainContainer'}>
             
             <div className={'titleContainer'}>
                 <div>Login</div>
+                <p> Welcome {data.name} </p>
+                <ul>
+                    {accounts.map((account) => (
+                        <li key={account.AccountID}>
+                            AccountID: {account.AccountID}
+                            <br></br>
+                            Balance: {account.AccountBalance}
+                        </li>
+                    ))}
+                </ul>
             </div>
             <br />
 
