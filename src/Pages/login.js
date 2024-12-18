@@ -3,50 +3,49 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthProvider'
 
 const Login = (props) => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [emailError, setEmailError] = useState('')
-    const [passwordError, setPasswordError] = useState('')
+    // const [email, setEmail] = useState('')
+    // const [password, setPassword] = useState('')
+    // const [emailError, setEmailError] = useState('')
+    // const [passwordError, setPasswordError] = useState('')
     const [input, setInput] = useState({
         username: '',
         password: ''
     })
     const auth = useAuth()
-
     const navigate = useNavigate()
 
     const onButtonClick = () => {
-        // Set initial error values to empty
-        setEmailError('')
-        setPasswordError('')
+        // // Set initial error values to empty
+        // setEmailError('')
+        // setPasswordError('')
 
-        // Check if the user has entered both fields correctly
-        if ('' === email) {
-            setEmailError('Please enter your email')
-            return
-        }
+        // // Check if the user has entered both fields correctly
+        // if ('' === email) {
+        //     setEmailError('Please enter your email')
+        //     return
+        // }
 
-        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
-            setEmailError('Please enter a valid email')
-            return
-        }
+        // if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+        //     setEmailError('Please enter a valid email')
+        //     return
+        // }
 
-        if ('' === password) {
-            setPasswordError('Please enter a password')
-            return
-        }
+        // if ('' === password) {
+        //     setPasswordError('Please enter a password')
+        //     return
+        // }
 
-        if (password.length < 7) {
-            setPasswordError('The password must be 8 characters or longer')
-            return
-        }
+        // if (password.length < 7) {
+        //     setPasswordError('The password must be 8 characters or longer')
+        //     return
+        // }
 
         // Simulate successful login and naviagte to dashboard
         navigate('/dashboard')
     }
 
     const handleSubmitEvent = (e) => {
-        e.preventdefault()
+        e.preventDefault()
         if (input.username !== '' & input.password !== '') {
             auth.login(input)
             return

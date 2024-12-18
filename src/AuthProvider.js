@@ -11,7 +11,7 @@ const AuthProvider = ({ children }) => {
 
     const login = async (data) => {
         try {
-            const response = await fetch ('api-endpoing/auth/login', {
+            const response = await fetch ('/auth/login', {
               method: 'POST',
               headers: {
                 'Content-type': 'application/json',
