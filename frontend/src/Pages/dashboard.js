@@ -26,14 +26,44 @@ const Dashboard = () => {
         ];
 
         //fetch both accounts and transactions
-           
+        fetch('/api/accounts/dashboard', {
+            method: 'GET',
+            headers: {
+                'userid': auth.token
+            }
+        })
+        .then(res => res.json())
+        .then(accounts => {
+            console.log(accounts)
+            setAccounts(accounts)
+
+            const accountIds = accounts.map(d => d.AccountID)
+
+            return fetch('/api/transactions/dashboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ account_ids: accountIds })
+            })
+        
+        })
+        .then(res => res.json())
+        .then(transactions => {
+            console.log(transactions)
+            setTransactions(transactions)
+        })
+        .catch(err => console.error(err))
+
+        
         // Simulate data load
         setTimeout(() => {
-            setAccounts(testAccounts);
-            setTransactions(testTransactions);
+            // setAccounts(testAccounts);
+            // setTransactions(testTransactions);
             setLoading(false);
           }, 1000);
-    }, []);
+
+    }, [auth.token]);
 
     if (loading) {
         return <div className='loading'>Loading...</div>
@@ -57,9 +87,9 @@ const Dashboard = () => {
                         </thead>
                         <tbody>
                             {accounts.map((a) => (
-                                <tr key={a.id}>
-                                    <td>{a.type}</td>
-                                    <td>{a.balance.toFixed(2)}</td>
+                                <tr key={a.AccountID}>
+                                    <td> Savings </td>
+                                    <td>{a.AccountBalance.toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -74,14 +104,16 @@ const Dashboard = () => {
                 {transactions.length > 0 ? (
                     <table className='transactions-table'>
                         <thead>
+                            <th>Account</th>
                             <th>Date</th>
                             <th>Amount</th>
                         </thead>
                         <tbody>
                             {transactions.map((t) => (
-                                <tr key={t.id}>
-                                    <th>{t.date}</th>
-                                    <th>{t.amount}</th>
+                                <tr key={t.TransactionID}>
+                                    <th>{t.AccountID}</th>
+                                    <th>{new Date(t.Date).toLocaleDateString()} {new Date(t.Date).toLocaleTimeString()}</th>
+                                    <th>{t.TransactionAmount}</th>
                                 </tr>
                             ))}
                         </tbody>

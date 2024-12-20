@@ -100,6 +100,47 @@ def login():
         'token': existing_user.UserID
     }), 200
 
+
+@app.route('/api/accounts/dashboard', methods=['GET'])
+def get_user_accounts():
+    # Extract userid (token) from request headers
+    user_id = request.headers.get('userid')
+    
+    if not user_id:
+        return jsonify({"error": "Missing userid in headers"}), 400
+
+    # Retrieve account data for the given user_id (token)
+    accounts = BankAccount.query.filter_by(UserID=user_id).all()
+    account_list = [{'AccountID': a.AccountID, 'AccountBalance': float(a.AccountBalance)} for a in accounts]
+    
+    # Respond with account data
+    return jsonify(account_list), 200
+
+@app.route('/api/transactions/dashboard', methods=['POST'])
+def get_transactions_by_account_ids():
+    account_ids = request.json.get('account_ids', [])
+    if not account_ids:
+        return jsonify({'error': 'No account IDs provided'}), 400
+    
+    transactions = ScheduledTransactions.query.filter(
+        ScheduledTransactions.AccountID.in_(account_ids)
+    ).all()
+
+    transaction_list = [
+        {
+            "TransactionID": t.TransactionID,
+            "AccountID": t.AccountID,
+            "ReceivingAccountID": t.ReceivingAccountID,
+            "Date": t.Date,
+            "TransactionAmount": float(t.TransactionAmount),
+            "Comment": t.Comment,
+        }
+        for t in transactions
+    ]
+    
+    return jsonify(transaction_list), 200
+
+
 # Run app
 if __name__ == '__main__':
     app.run(debug=True)
