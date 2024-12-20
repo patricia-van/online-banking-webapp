@@ -43,6 +43,7 @@ const Dashboard = () => {
         <div className='user-dashboard'>
             <AuthProvider>    
             <h1>Welcome to Your Dashboard</h1>
+            <h1> { auth.token } </h1>
 
             <section className='accounts-section'>
                 <h2>Your Accounts</h2>
