@@ -2,13 +2,15 @@ import { formDataToBlob } from "formdata-polyfill/esm.min";
 import React, { use, useEffect, useState} from "react";
 
 const ManageTransactions = () => {
-    const [transactions, setTransactions] = useState([]);
-    const [showForm, setShowForm] = useState(false)
-    const [formData, setFormData] = useState({
+    const [ transactions, setTransactions ] = useState([]);
+    const [ showForm, setShowForm ] = useState(false)
+    const [ formData, setFormData ] = useState({
         date:'',
         amount:0,
         comment:''
     })
+    const [ deleteMode, setDeleteMode ] = useState(false)
+    const [ selectedTransactions, setSelectedTransactions ] = useState([])
 
     useEffect(() => {
         //fetch data for user transactions
@@ -24,10 +26,6 @@ const ManageTransactions = () => {
     const handleCreateTransaction = () => {
         setShowForm(true)
     }
-
-    const handleDeleteTransaction = () => [
-        alert('Transaction deleted')
-    ]
 
     const handleFormChange = (e) => {
         const { name, value } = e.target
@@ -49,6 +47,23 @@ const ManageTransactions = () => {
         alert('New transaction scheduled')
     }
 
+    const toggleDeleteMode = () => {
+        setDeleteMode((prevMode) => !prevMode)
+        setSelectedTransactions([])
+    }
+
+    const handleCheckboxChange = (transactionId) => {
+        setSelectedTransactions((prevSelected) => 
+            prevSelected.includes(transactionId) ?
+                prevSelected.filter((id) => id !== transactionId)
+                : [...prevSelected, transactionId] 
+    )}
+
+    const handleDeleteSelected = () => {
+        setDeleteMode(false)
+        alert('Selected transactions deleted')
+    }
+
 
     return (
         <div className='manage-transactions'>
@@ -58,8 +73,8 @@ const ManageTransactions = () => {
                 <button className="create-button" onClick={handleCreateTransaction}>
                     New Transactions
                 </button>
-                <button className="delete-button" onClick={handleDeleteTransaction}>
-                    Delete Transaction
+                <button className="delete-button" onClick={toggleDeleteMode}>
+                    {deleteMode? 'Cancel Delete' : 'Delete Transaction'}
                 </button>
             </div>
 
@@ -95,8 +110,13 @@ const ManageTransactions = () => {
                     <tbody>
                         {transactions.map((t) => (
                             <tr key={t.id}>
-                                <th>{t.date}</th>
-                                <th>{t.amount}</th>
+                                <td>{t.date}</td>
+                                <td>{t.amount}</td>
+                                {deleteMode && (
+                                    <td>
+                                        <input type="checkbox" checked={selectedTransactions.includes(t.id)} onChange={() => handleCheckboxChange(t.id)} />
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>
@@ -104,7 +124,16 @@ const ManageTransactions = () => {
             ) : (
                 <p>No transactions scheduled.</p>
             )}
+
+            { deleteMode && selectedTransactions.length > 0 && (
+            <button className="confirm-delete-buttton" onClick={handleDeleteSelected}>
+                Confirm Delete
+            </button>
+                
+        )}
+        
         </div>
+  
     )
 
 }
