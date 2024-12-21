@@ -140,6 +140,38 @@ def get_transactions_by_account_ids():
     
     return jsonify(transaction_list), 200
 
+@app.route('/api/transactions/new', methods=['PUT'])
+def schedule_new_transaction():
+    try:
+        data = request.get_json()
+
+        sender_account_id = data.get('senderAccountId')
+        receiver_account_id = data.get('receiverAccountId')
+        date = data.get('date')
+        time = data.get('time')  
+        amount = data.get('amount')
+        comment = data.get('comment')
+
+        new_transaction = ScheduledTransactions(
+            AccountID=sender_account_id,
+            ReceivingAccountID=receiver_account_id,
+            Date=date.split("T")[0],
+            TransactionAmount=amount,
+            Comment=comment)
+        
+        db.session.add(new_transaction)
+        db.session.commit()
+
+        transactions = ScheduledTransactions.query.all()
+        print(transactions)
+
+        return jsonify({"message": "Transaction scheduled successfully!"}), 200
+   
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"message": "Failed to schedule transaction", "error": str(e)}), 500
+
+
 
 # Run app
 if __name__ == '__main__':

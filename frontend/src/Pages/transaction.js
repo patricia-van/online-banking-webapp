@@ -58,23 +58,40 @@ const ManageTransactions = () => {
 
     const handleNewTransactionSubmit = (e) => {
         e.preventDefault()
+
+        const formattedDate = new Date(formData.date).toISOString().split("T")[0]
+
         const newTransaction = {
             senderAccountId: formData.senderAccountId,
             receiverAccountId: formData.receiverAccountId,
-            data: formData.date,
+            date: formattedDate,
             time: formData.time,
             amount: parseFloat(formData.amount),
             comment: formData.comment    
         }
-        setShowForm(false)
-        setFormData({        
-            senderAccountId:'',
-            receiverAccountId:'',
-            date:'',
-            time:'',
-            amount:'',
-            comment:'' });
-        alert('New transaction scheduled')
+
+        fetch('/api/transactions/new', {
+            method: 'PUT',
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify(newTransaction)
+        })
+        .then(res => {
+            setShowForm(false)
+            setFormData({        
+                senderAccountId:'',
+                receiverAccountId:'',
+                date:'',
+                time:'',
+                amount:'',
+                comment:'' });
+            alert('New transaction scheduled') 
+        })
+        .catch (error => {
+            console.error("Error scheduling transaction:", error);
+            alert("An error occurred. Please try again later.");
+        })
     }
 
     const toggleDeleteMode = () => {
