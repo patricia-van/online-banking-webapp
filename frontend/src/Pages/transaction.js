@@ -1,16 +1,23 @@
 import { formDataToBlob } from "formdata-polyfill/esm.min";
 import React, { use, useEffect, useState} from "react";
+import { useAuth } from "../AuthProvider";
 
 const ManageTransactions = () => {
     const [ transactions, setTransactions ] = useState([]);
     const [ showForm, setShowForm ] = useState(false)
     const [ formData, setFormData ] = useState({
+        senderAccountId:'',
+        receiverAccountId:'',
         date:'',
-        amount:0,
+        time:'',
+        amount:'',
         comment:''
     })
     const [ deleteMode, setDeleteMode ] = useState(false)
     const [ selectedTransactions, setSelectedTransactions ] = useState([])
+    const [ accountIds, setAccountIds ] = useState([]);
+
+    const auth = useAuth()
 
     useEffect(() => {
         //fetch data for user transactions
@@ -21,7 +28,21 @@ const ManageTransactions = () => {
         ];
 
         setTransactions(testTransactions);
-    }, []);
+
+        fetch('/api/accounts/dashboard', {
+            method: 'GET',
+            headers: {
+                'userid': auth.token
+            }
+        })
+        .then(res => res.json())
+        .then(accounts => {
+            console.log(accounts)
+            const ids = accounts.map(d => d.AccountID)
+            setAccountIds(ids)  
+        })
+
+    }, [auth.token]);
 
     const handleCreateTransaction = () => {
         setShowForm(true)
@@ -38,12 +59,21 @@ const ManageTransactions = () => {
     const handleNewTransactionSubmit = (e) => {
         e.preventDefault()
         const newTransaction = {
+            senderAccountId: formData.senderAccountId,
+            receiverAccountId: formData.receiverAccountId,
             data: formData.date,
+            time: formData.time,
             amount: parseFloat(formData.amount),
-            comment: formData.comment
+            comment: formData.comment    
         }
         setShowForm(false)
-        setFormData({ date:'', amount: 0, description:'' });
+        setFormData({        
+            senderAccountId:'',
+            receiverAccountId:'',
+            date:'',
+            time:'',
+            amount:'',
+            comment:'' });
         alert('New transaction scheduled')
     }
 
@@ -83,15 +113,33 @@ const ManageTransactions = () => {
                     <h2> Schedule New Transaction </h2>
                     <form onSubmit={handleNewTransactionSubmit}>
                         <div>
+                            <label>
+                                Account ID:
+                                <select name="senderAccountId" value={formData.senderAccountId} onChange={handleFormChange}>
+                                    {accountIds.map((id) => (
+                                        <option key={id} value={id}>{id}</option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+                        <div>
+                            <label>Receiving Account ID:</label>
+                            <input type="number" name="receiverAccountId" value={formData.receiverAccountId} onChange={handleFormChange} required/>
+                        </div>
+                        <div>
                             <label>Date:</label>
                             <input type="date" name="date" value={formData.date} onChange={handleFormChange} required/>
+                        </div>
+                        <div>
+                            <label>Time:</label>
+                            <input type="time" name="time" value={formData.time} onChange={handleFormChange} required/>
                         </div>
                         <div>
                             <label>Amount:</label>
                             <input type="number" name="amount" value={formData.amount} onChange={handleFormChange} required/>
                         </div>
                         <div>
-                            <label>Comments:</label>
+                            <label>Comment:</label>
                             <input type="text" name='comment' value={formData.comment} onChange={handleFormChange}/>
                         </div>
                         <button type="submit">Submit</button>
