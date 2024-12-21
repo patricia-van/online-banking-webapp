@@ -104,16 +104,20 @@ const Dashboard = () => {
                 {transactions.length > 0 ? (
                     <table className='transactions-table'>
                         <thead>
-                            <th>Account</th>
+                            <th>Account ID</th>
+                            <th>Receiving Account ID</th>
                             <th>Date</th>
                             <th>Amount</th>
+                            <th>Comment</th>
                         </thead>
                         <tbody>
                             {transactions.map((t) => (
                                 <tr key={t.TransactionID}>
                                     <th>{t.AccountID}</th>
+                                    <th>{t.ReceivingAccountID}</th>
                                     <th>{new Date(t.Date).toLocaleDateString()} {new Date(t.Date).toLocaleTimeString()}</th>
                                     <th>{t.TransactionAmount}</th>
+                                    <th>{t.Comment}</th>
                                 </tr>
                             ))}
                         </tbody>
