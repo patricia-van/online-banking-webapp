@@ -39,8 +39,23 @@ const ManageTransactions = () => {
         .then(accounts => {
             console.log(accounts)
             const ids = accounts.map(d => d.AccountID)
+            console.log(ids)
             setAccountIds(ids)  
+
+            return fetch('/api/transactions/dashboard', {
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({account_ids: ids})
+            })
         })
+        .then(res => res.json())
+        .then(transactions => {
+            console.log(transactions)
+            setTransactions(transactions)
+        })
+        .catch(err => console.error(err))
 
     }, [auth.token]);
 
@@ -87,6 +102,7 @@ const ManageTransactions = () => {
                 amount:'',
                 comment:'' });
             alert('New transaction scheduled') 
+            window.location.reload()
         })
         .catch (error => {
             console.error("Error scheduling transaction:", error);
@@ -97,18 +113,39 @@ const ManageTransactions = () => {
     const toggleDeleteMode = () => {
         setDeleteMode((prevMode) => !prevMode)
         setSelectedTransactions([])
+        console.log(selectedTransactions)
     }
 
     const handleCheckboxChange = (transactionId) => {
-        setSelectedTransactions((prevSelected) => 
+        setSelectedTransactions((prevSelected) =>
             prevSelected.includes(transactionId) ?
                 prevSelected.filter((id) => id !== transactionId)
-                : [...prevSelected, transactionId] 
-    )}
+                : [...prevSelected, transactionId]
+            )
+        console.log(selectedTransactions)
+    }
 
     const handleDeleteSelected = () => {
+        console.log(selectedTransactions)
         setDeleteMode(false)
-        alert('Selected transactions deleted')
+
+        fetch('/api/transactions/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ transactionsIds: selectedTransactions})
+        })
+        .then(res => {
+            console.log(res.json)
+            alert('Selected transactions deleted') 
+            window.location.reload()
+        })
+        .catch(error => {
+            console.error("Error scheduling transaction:", error)
+        })
+
+        
     }
 
 
@@ -169,20 +206,26 @@ const ManageTransactions = () => {
             {transactions.length > 0 ? (
                 <table className='transactions-table'>
                     <thead>
+                        <th>Account ID</th>
+                        <th>Receiving Account ID</th>
                         <th>Date</th>
                         <th>Amount</th>
+                        <th>Comment</th>
                     </thead>
                     <tbody>
                         {transactions.map((t) => (
-                            <tr key={t.id}>
-                                <td>{t.date}</td>
-                                <td>{t.amount}</td>
+                            <tr key={t.TransactionID}>
+                                <th>{t.AccountID}</th>
+                                <th>{t.ReceivingAccountID}</th>
+                                <th>{new Date(t.Date).toLocaleDateString()}</th>
+                                <th>{t.TransactionAmount}</th>
+                                <th>{t.Comment}</th>
                                 {deleteMode && (
                                     <td>
-                                        <input type="checkbox" checked={selectedTransactions.includes(t.id)} onChange={() => handleCheckboxChange(t.id)} />
+                                        <input type="checkbox" checked={selectedTransactions.includes(t.TransactionID)} onChange={() => handleCheckboxChange(t.TransactionID)} />
                                     </td>
                                 )}
-                            </tr>
+                            </tr>   
                         ))}
                     </tbody>
                 </table>

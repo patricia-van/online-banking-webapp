@@ -165,11 +165,32 @@ def schedule_new_transaction():
         transactions = ScheduledTransactions.query.all()
         print(transactions)
 
+        db.session.close()
+
         return jsonify({"message": "Transaction scheduled successfully!"}), 200
    
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"message": "Failed to schedule transaction", "error": str(e)}), 500
+
+
+@app.route('/api/transactions/delete', methods=['POST'])
+def delete_transactions_by_id():
+    try:
+        data = request.get_json()
+        transaction_ids = data.get('transactionsIds')
+
+        ScheduledTransactions.query.filter(ScheduledTransactions.TransactionID.in_(transaction_ids)).delete(synchronize_session=False)
+
+        db.session.commit()
+        return jsonify({'message': "Transactions deleted successfully"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        db.session.close()
 
 
 
