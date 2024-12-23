@@ -207,9 +207,24 @@ def get_user_details(user_id):
         }), 200
     return jsonify({'error': 'User not found'}), 404
 
-@app.route('/api/user/<int:user_id>', methods=['POST'])
-def update_user_details():
-    return 
+@app.route('/api/user/<int:user_id>', methods=['PUT'])
+def update_user_details(user_id):
+    try:
+        data = request.get_json()
+        user = db.session.get(User, user_id)
+        
+        if user: 
+            user.Email = data.get('Email', user.Email)
+            user.Address = data.get('Address', user.Address)
+            db.session.commit()
+            return jsonify({'message': 'User details updated succesfully'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        db.session.close()
 
 
 # Run app
