@@ -192,6 +192,24 @@ def delete_transactions_by_id():
     finally:
         db.session.close()
 
+@app.route('/api/user/<int:user_id>', methods=['GET'])
+def get_user_details(user_id):
+    user = db.session.get(User, user_id)
+
+    if user:
+        return jsonify({
+            'Username': user.Username,
+            'Firstname': user.Firstname,
+            'Lastname': user.Lastname,
+            'Email': user.Email,
+            'Address': user.Address,
+            'OptIntoPhyStatements': user.OptIntoPhyStatements
+        }), 200
+    return jsonify({'error': 'User not found'}), 404
+
+@app.route('/api/user/<int:user_id>', methods=['POST'])
+def update_user_details():
+    return 
 
 
 # Run app

@@ -8,6 +8,7 @@ import PrivateRoute from './PrivateRoute'
 import Login from './Pages/login'
 import Dashboard from './Pages/dashboard'
 import ManageTransactions from './Pages/transaction'
+import Profile from './Pages/profile'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -31,6 +32,12 @@ function App() {
               path='/transactions' 
               element={<ManageTransactions />}
             />
+
+          <Route 
+              path='/profile' 
+              element={<Profile />}
+            />  
+
           </Routes>
         </AuthProvider>
       </BrowserRouter>
