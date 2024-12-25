@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import datetime
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+
 
 x = datetime.datetime.now()
 
@@ -12,8 +14,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["JWT_SECRET_KEY"] = 'secret'
 
 db = SQLAlchemy(app)
+jwt = JWTManager(app)
 
 class BankAccount(db.Model):
     __tablename__='BankAccount'
@@ -88,20 +92,24 @@ def login():
     existing_user = User.query.filter_by(Username=username).first()
     if not existing_user or existing_user.Password != password:
         return jsonify({'message': 'Invalid email or password'}), 401
+    
+    access_token = create_access_token(identity=str(existing_user.UserID))
+    return jsonify(access_token=access_token)
 
-    # Respond with user info and token
-    return jsonify({
-        'data': {
-            'user': {
-                'id': existing_user.UserID,
-                'username': existing_user.Username
-            }
-        },
-        'token': existing_user.UserID
-    }), 200
+    # # Respond with user info and token
+    # return jsonify({
+    #     'data': {
+    #         'user': {
+    #             'id': existing_user.UserID,
+    #             'username': existing_user.Username
+    #         }
+    #     },
+    #     'token': existing_user.UserID
+    # }), 200
 
 
 @app.route('/api/accounts/dashboard', methods=['GET'])
+@jwt_required() 
 def get_user_accounts():
     # Extract userid (token) from request headers
     user_id = request.headers.get('userid')
@@ -117,6 +125,7 @@ def get_user_accounts():
     return jsonify(account_list), 200
 
 @app.route('/api/transactions/dashboard', methods=['POST'])
+@jwt_required()
 def get_transactions_by_account_ids():
     account_ids = request.json.get('account_ids', [])
     if not account_ids:

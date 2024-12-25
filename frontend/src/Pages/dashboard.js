@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import AuthProvider from '../AuthProvider';
 import { useAuth } from '../AuthProvider';
-// import dashboard.css
 
 const Dashboard = () => {
     const [accounts, setAccounts] = useState([]);
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
-
     const auth = useAuth()
 
     useEffect(() => {
@@ -29,7 +27,8 @@ const Dashboard = () => {
         fetch('/api/accounts/dashboard', {
             method: 'GET',
             headers: {
-                'userid': auth.token
+                'Authorization': 'Bearer ' + auth.token,
+                'userid': auth.user
             }
         })
         .then(res => res.json())
@@ -43,6 +42,7 @@ const Dashboard = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + auth.token,
                 },
                 body: JSON.stringify({ account_ids: accountIds })
             })
@@ -50,7 +50,7 @@ const Dashboard = () => {
         })
         .then(res => res.json())
         .then(transactions => {
-            console.log(transactions)
+            console.log("Transactions:" + transactions)
             setTransactions(transactions)
         })
         .catch(err => console.error(err))
@@ -63,7 +63,7 @@ const Dashboard = () => {
             setLoading(false);
           }, 1000);
 
-    }, [auth.token]);
+    }, [auth.user, auth.token]);
 
     if (loading) {
         return <div className='loading'>Loading...</div>

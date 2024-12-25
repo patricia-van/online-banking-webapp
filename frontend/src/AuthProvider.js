@@ -1,13 +1,27 @@
-import { useContext, createContext, useState } from 'react'
-import { UNSAFE_LocationContext, useNavigate } from 'react-router-dom'
+import { useContext, createContext, useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode'
 
 const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
-    const [token, setToken] = useState(localStorage.getItem('site') || '')
-    
+    const [token, setToken] = useState(null)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token')
+        if (storedToken) {
+            try {
+                const decoded = jwtDecode(storedToken)
+                setUser(Number(decoded.sub))
+                setToken(storedToken)
+            } catch (err) {
+                console.error("Invalid token");
+                localStorage.removeItem('token'); // Clear invalid tokens
+            }
+        }
+    }, [])
 
     const login = async (data) => {
         try {
@@ -19,14 +33,20 @@ const AuthProvider = ({ children }) => {
               body: JSON.stringify(data),
             })   
             const res = await response.json();
-            if (res.data) {
-                setUser(res.data.user);
-                setToken(res.token);
-                localStorage.setItem('site', res.token);
+            if (res.access_token) {
+
+                const decoded = jwtDecode(res.access_token)
+                console.log(res)
+                console.log(decoded)
+
+                setUser(decoded.sub);
+                setToken(res.access_token);
+                localStorage.setItem('token', res.access_token);
+
                 navigate('/dashboard')
+
                 return
             }
-            throw new Error(res.message)
         } catch (err) {
             console.error(err)
         }
@@ -34,8 +54,8 @@ const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setUser(null)
-        setToken('')
-        localStorage.removeItem('site')
+        setToken(null)
+        localStorage.removeItem('token')
         navigate('/')
     }
 
