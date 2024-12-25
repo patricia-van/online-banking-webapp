@@ -15,14 +15,19 @@ const Profile = () => {
     useEffect(() => {
         console.log(auth.token)
         //fetch user information
-        fetch(`/api/user/${auth.token}`)
+        fetch(`/api/user/${auth.user}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + auth.token,
+            }
+        })
         .then((res) => res.json())
         .then((data) => {
             console.log(data)
             setUser(data)
         })
         .catch(err => console.log(err))
-    }, [auth.token])
+    }, [auth.user, auth.token])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -35,10 +40,11 @@ const Profile = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        fetch(`api/user/${auth.token}`, {
+        fetch(`api/user/${auth.user}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + auth.token,
             },
             body: JSON.stringify({
                 Email: user.Email,

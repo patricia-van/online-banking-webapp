@@ -32,7 +32,8 @@ const ManageTransactions = () => {
         fetch('/api/accounts/dashboard', {
             method: 'GET',
             headers: {
-                'userid': auth.token
+                'Authorization': 'Bearer ' + auth.token,
+                'userid': auth.user
             }
         })
         .then(res => res.json())
@@ -45,7 +46,8 @@ const ManageTransactions = () => {
             return fetch('/api/transactions/dashboard', {
                 method:'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + auth.token,
                 },
                 body: JSON.stringify({account_ids: ids})
             })
@@ -57,7 +59,7 @@ const ManageTransactions = () => {
         })
         .catch(err => console.error(err))
 
-    }, [auth.token]);
+    }, [auth.user, auth.token]);
 
     const handleCreateTransaction = () => {
         setShowForm(true)
@@ -88,11 +90,12 @@ const ManageTransactions = () => {
         fetch('/api/transactions/new', {
             method: 'PUT',
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + auth.token
             },
             body: JSON.stringify(newTransaction)
         })
-        .then(res => {
+        .then(() => {
             setShowForm(false)
             setFormData({        
                 senderAccountId:'',
@@ -132,7 +135,8 @@ const ManageTransactions = () => {
         fetch('/api/transactions/delete', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + auth.token
             },
             body: JSON.stringify({ transactionsIds: selectedTransactions})
         })
@@ -147,7 +151,6 @@ const ManageTransactions = () => {
 
         
     }
-
 
     return (
         <div className='manage-transactions'>

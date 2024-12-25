@@ -150,6 +150,7 @@ def get_transactions_by_account_ids():
     return jsonify(transaction_list), 200
 
 @app.route('/api/transactions/new', methods=['PUT'])
+@jwt_required()
 def schedule_new_transaction():
     try:
         data = request.get_json()
@@ -184,6 +185,7 @@ def schedule_new_transaction():
 
 
 @app.route('/api/transactions/delete', methods=['POST'])
+@jwt_required()
 def delete_transactions_by_id():
     try:
         data = request.get_json()
@@ -202,6 +204,7 @@ def delete_transactions_by_id():
         db.session.close()
 
 @app.route('/api/user/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user_details(user_id):
     user = db.session.get(User, user_id)
 
@@ -217,6 +220,7 @@ def get_user_details(user_id):
     return jsonify({'error': 'User not found'}), 404
 
 @app.route('/api/user/<int:user_id>', methods=['PUT'])
+@jwt_required()
 def update_user_details(user_id):
     try:
         data = request.get_json()
