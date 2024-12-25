@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthProvider'
+import NavBar from '../NavBar'
 
 const Login = (props) => {
     // const [email, setEmail] = useState('')
@@ -14,7 +15,7 @@ const Login = (props) => {
     const auth = useAuth()
     const navigate = useNavigate()
 
-    const onButtonClick = () => {
+    // const onButtonClick = () => {
         // // Set initial error values to empty
         // setEmailError('')
         // setPasswordError('')
@@ -41,8 +42,8 @@ const Login = (props) => {
         // }
 
         // Simulate successful login and naviagte to dashboard
-        navigate('/dashboard')
-    }
+    //     navigate('/dashboard')
+    // }
 
     const handleSubmitEvent = (e) => {
         e.preventDefault()
@@ -65,55 +66,54 @@ const Login = (props) => {
         navigate('/transactions')
     }
 
-    const [data, setdata] = useState({
-        name: "", 
-        age: 0,
-        data: "",
-        programming: ""
-      })
+    // const [data, setdata] = useState({
+    //     name: "", 
+    //     age: 0,
+    //     data: "",
+    //     programming: ""
+    //   })
     
-    useEffect(() => {
-        fetch("/data").then((res) => 
-          res.json().then((data) => {
-            setdata({
-              name: data.Name,
-              age: data.Age,
-              data: data.Date,
-              programming: data.programming
-            })
-          }))
-      }, [])
+    // useEffect(() => {
+    //     fetch("/data").then((res) => 
+    //       res.json().then((data) => {
+    //         setdata({
+    //           name: data.Name,
+    //           age: data.Age,
+    //           data: data.Date,
+    //           programming: data.programming
+    //         })
+    //       }))
+    //   }, [])
 
-    const [accounts, setAccounts] = useState([]);
+    // const [accounts, setAccounts] = useState([]);
     
-    useEffect(() => {
-        fetch("/api/accounts").then((res) => {
-            res.json().then((data) => {
-                if (Array.isArray(data)) {
-                    setAccounts(data)
-                } else {
-                    console.error('Received data not an array')
-                }
+    // useEffect(() => {
+    //     fetch("/api/accounts").then((res) => {
+    //         res.json().then((data) => {
+    //             if (Array.isArray(data)) {
+    //                 setAccounts(data)
+    //             } else {
+    //                 console.error('Received data not an array')
+    //             }
                     
-            })
-        //     if (!res.ok) {
-        //         throw new Error('Network response was not ok')
-        //     }
-        //     return res.json();
-        // }).then((data) => {
-        //     setAccounts(data)
-        // }).catch((error) => {
-        //     console.error('There was a problem with the fecth operation')
-        })
-    }, [])
+    //         })
+    //     //     if (!res.ok) {
+    //     //         throw new Error('Network response was not ok')
+    //     //     }
+    //     //     return res.json();
+    //     // }).then((data) => {
+    //     //     setAccounts(data)
+    //     // }).catch((error) => {
+    //     //     console.error('There was a problem with the fecth operation')
+    //     })
+    // }, [])
 
     return (
         <div className={'mainContainer'}>
-            
             <div className={'titleContainer'}>
                 <div>Login</div>
-                <p> Welcome {data.name} </p>
-                <ul>
+                <p> Welcome </p>
+                {/* <ul>
                     {accounts.map((account) => (
                         <li key={account.AccountID}>
                             AccountID: {account.AccountID}
@@ -121,7 +121,7 @@ const Login = (props) => {
                             Balance: {account.AccountBalance}
                         </li>
                     ))}
-                </ul>
+                </ul> */}
             </div>
             <br />
 
@@ -161,10 +161,10 @@ const Login = (props) => {
             </div>
             <br />
 
-            <div className={'inputContainer'}>
+            {/* <div className={'inputContainer'}>
                 <input className={'inputButton'} type='button' onClick={onButtonClick} value={'Login'} />
                 <input className={'transactionsButton'} type='button' onClick={onTransactionClick} value={'Manage my Transactions'} />
-            </div>
+            </div> */}
 
         </div>  
     )
