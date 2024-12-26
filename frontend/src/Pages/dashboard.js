@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import AuthProvider from '../AuthProvider';
 import { useAuth } from '../AuthProvider';
+
 
 const Dashboard = () => {
     const [accounts, setAccounts] = useState([]);
@@ -54,14 +58,7 @@ const Dashboard = () => {
             setTransactions(transactions)
         })
         .catch(err => console.error(err))
-
-        
-        // Simulate data load
-        setTimeout(() => {
-            // setAccounts(testAccounts);
-            // setTransactions(testTransactions);
-            setLoading(false);
-          }, 1000);
+        setLoading(false)
 
     }, [auth.user, auth.token]);
 
@@ -75,35 +72,35 @@ const Dashboard = () => {
             <h1>Welcome to Your Dashboard</h1>
             <h1> { auth.token } </h1>
 
-            <section className='accounts-section'>
+            <section className='accounts-section container my-4'>
                 <h2>Your Accounts</h2>
                 {accounts.length > 0 ? (
-                    <table className='accounts-table'>
-                        <thead>
-                            <tr>
-                                <th>Account Type</th>
-                                <th>Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {accounts.map((a) => (
-                                <tr key={a.AccountID}>
-                                    <td> Savings </td>
-                                    <td>{a.AccountBalance.toFixed(2)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <Row xs={1} md={3} className="g-4">
+                        {accounts.map((a) => (
+                            <Col key={a.AccountID}>
+                                <Card border="#f7f7f7" style={{ width: '24rem' }}>
+                                    <Card.Header as="h6">{a.AccountType} Account</Card.Header>
+                                    <Card.Body>
+                                        <Card.Text className="mb-2 text-muted">Balance:</Card.Text>
+                                        <Card.Text as="h3">${a.AccountBalance}</Card.Text>
+                                        <Card.Text></Card.Text>
+                                        <Card.Text></Card.Text>
+                                        <Card.Text as="h7">{a.AccountID}</Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        ))}
+                    </Row>
                 ) : (
                     <p>No accounts found.</p>
                 )}
             </section>
 
-            <section className='transactions-section'>
+            <section className='transactions-section container my-4'>
                 <h2>Scheduled Transactions</h2>
                 {transactions.length > 0 ? (
-                    <table className='transactions-table'>
-                        <thead>
+                    <table class="table table-bordered">
+                       <thead class="table-light">
                             <th>Account ID</th>
                             <th>Receiving Account ID</th>
                             <th>Date</th>

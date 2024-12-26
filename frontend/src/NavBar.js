@@ -5,6 +5,8 @@ import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 
 function NavBar() {

@@ -113,13 +113,16 @@ def login():
 def get_user_accounts():
     # Extract userid (token) from request headers
     user_id = request.headers.get('userid')
-    
+
     if not user_id:
         return jsonify({"error": "Missing userid in headers"}), 400
 
     # Retrieve account data for the given user_id (token)
     accounts = BankAccount.query.filter_by(UserID=user_id).all()
-    account_list = [{'AccountID': a.AccountID, 'AccountBalance': float(a.AccountBalance)} for a in accounts]
+    account_list = [{'AccountID': a.AccountID,
+                     'AccountType': a.AccountType, 
+                     'AccountBalance': float(a.AccountBalance)}
+                     for a in accounts]
     
     # Respond with account data
     return jsonify(account_list), 200
