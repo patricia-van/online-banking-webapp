@@ -205,36 +205,38 @@ const ManageTransactions = () => {
                 </div>
             )}
 
-            <h2>Scheduled Transactions</h2>
-            {transactions.length > 0 ? (
-                <table className='transactions-table'>
-                    <thead>
-                        <th>Account ID</th>
-                        <th>Receiving Account ID</th>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Comment</th>
-                    </thead>
-                    <tbody>
-                        {transactions.map((t) => (
-                            <tr key={t.TransactionID}>
-                                <th>{t.AccountID}</th>
-                                <th>{t.ReceivingAccountID}</th>
-                                <th>{new Date(t.Date).toLocaleDateString()}</th>
-                                <th>{t.TransactionAmount}</th>
-                                <th>{t.Comment}</th>
-                                {deleteMode && (
+        <section className='transactions-section container my-4'>
+                <h2>Scheduled Transactions</h2>
+                {transactions.length > 0 ? (
+                    <table class="table table-bordered">
+                       <thead class="table-light">
+                            <th>Account ID</th>
+                            <th>Receiving Account ID</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Comment</th>
+                        </thead>
+                        <tbody>
+                            {transactions.map((t) => (
+                                <tr key={t.TransactionID}>
+                                    <th>{t.AccountID}</th>
+                                    <th>{t.ReceivingAccountID}</th>
+                                    <th>{new Date(t.Date).toLocaleDateString()} {new Date(t.Date).toLocaleTimeString()}</th>
+                                    <th>{t.TransactionAmount}</th>
+                                    <th>{t.Comment}</th>
+                                    {deleteMode && (
                                     <td>
                                         <input type="checkbox" checked={selectedTransactions.includes(t.TransactionID)} onChange={() => handleCheckboxChange(t.TransactionID)} />
                                     </td>
                                 )}
-                            </tr>   
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <p>No transactions scheduled.</p>
-            )}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p>No transactions scheduled.</p>
+                )}
+            </section>
 
             { deleteMode && selectedTransactions.length > 0 && (
             <button className="confirm-delete-buttton" onClick={handleDeleteSelected}>
